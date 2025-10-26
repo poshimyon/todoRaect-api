@@ -3,7 +3,7 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 const client = new DynamoDBClient({
     region: "local",
-    endpoint: "http://localhost:8000/",
+    endpoint: "http://localhost:8000/bbb",
     credentials: {
         accessKeyId: "fakeMyKeyId",
         secretAccessKey: "fakeSecretAccessKey",
