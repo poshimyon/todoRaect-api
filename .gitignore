@@ -3,3 +3,4 @@ dist/
 .env
 *.tsbuildinfo
 dynamodb-data/shared-local-instance.db
+.DS_Store
