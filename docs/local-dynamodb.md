@@ -37,12 +37,7 @@ docker logs dynamodb-local --tail 200
 # named volume の中身確認
 docker run --rm -v todoreact-api_dynamodb-data:/data alpine ls -la /data
 
-# 破損 DB のバックアップ（任意）
-mkdir -p ./dynamodb-data-backup
-docker run --rm -v todoreact-api_dynamodb-data:/data -v "$(pwd)/dynamodb-data-backup":/backup alpine \
-  sh -c 'cp /data/shared-local-instance.db /backup/ || true; ls -la /backup'
-
-# 破損 DB の削除（テスト環境での例）
+# DB の削除
 docker run --rm -v todoreact-api_dynamodb-data:/data alpine rm -f /data/shared-local-instance.db || true
 
 # 所有者変更（dynamodb の実行ユーザ UID 1000 に合わせる）
