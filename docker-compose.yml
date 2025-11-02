@@ -1,15 +1,11 @@
 version: "3.8"
-services:
-    dynamodb-local:
-        image: amazon/dynamodb-local
-        container_name: dynamodb-local
-        ports:
-            - "8000:8000"
-        command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data"
-        # Use a Docker named volume instead of a host bind mount to avoid
-        # macOS/host permission issues when DynamoDB Local writes its SQLite DB.
-        volumes:
-            - dynamodb-data:/home/dynamodblocal/data
 
-volumes:
-    dynamodb-data:
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data"
+    volumes:
+      - ./dynamodb-data:/home/dynamodblocal/data
