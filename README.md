@@ -23,4 +23,20 @@ TODO 雛形
   "title": "test",
   "author": "takumi"
 }
+docker 起動
+
+```
+
+docker-compose up -d
+
+```
+
+docker 起動
+
+```
+
+docker-compose down
+
+```
+
 ```
