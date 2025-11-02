@@ -11,5 +11,6 @@ services:
         volumes:
             - dynamodb-data:/home/dynamodblocal/data
 
+# Windowsの時はここをコメントアウトする
 volumes:
     dynamodb-data:
