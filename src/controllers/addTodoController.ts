@@ -1,25 +1,42 @@
 import { Request, Response } from "express";
+import { randomUUID } from "node:crypto";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { ddb } from "../client.js";
 
 const TABLE_NAME = "Todos";
 
 export const addTodo = async (req: Request, res: Response) => {
-  const { id, title, author, todoDate } = req.body;
+  const { id: rawId, title, author, todoDate } = req.body;
 
-  if (!id || !title || !author || !todoDate) {
+  if (!title || !author || !todoDate) {
     return res.status(400).json({ message: "All fields required" });
   }
+
+  const id =
+    typeof rawId === "string" && rawId.trim().length > 0 ? rawId : randomUUID();
+  const item = { id, title, author, todoDate };
 
   try {
     await ddb.send(
       new PutCommand({
         TableName: TABLE_NAME,
-        Item: { id, title, author, todoDate },
+        Item: item,
+        ConditionExpression: "attribute_not_exists(id)",
       })
     );
-    res.json({ message: "Added" });
+    res.status(201).json(item);
   } catch (err) {
-    res.status(500).json({ message: "Failed to add todo", error: err });
+    console.error("❌ Add todo error:", err);
+
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "name" in err &&
+      err.name === "ConditionalCheckFailedException"
+    ) {
+      return res.status(409).json({ message: "Todo already exists" });
+    }
+
+    res.status(500).json({ message: "Failed to add todo" });
   }
 };

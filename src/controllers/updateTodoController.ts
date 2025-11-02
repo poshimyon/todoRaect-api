@@ -13,22 +13,41 @@ export const updateTodo = async (req: Request, res: Response) => {
   }
 
   try {
-    await ddb.send(
+    const result = await ddb.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { id },
-        UpdateExpression: "SET title = :title, author = :author, todoDate = :todoDate",
+        UpdateExpression:
+          "SET title = :title, author = :author, todoDate = :todoDate",
         ExpressionAttributeValues: {
           ":title": title,
           ":author": author,
           ":todoDate": todoDate,
         },
-        ReturnValues: "UPDATED_NEW", // ← これを追加
+        ConditionExpression: "attribute_exists(id)",
+        ReturnValues: "ALL_NEW",
       })
     );
-    res.json({ message: "Updated" });
+
+    if (!result.Attributes) {
+      return res
+        .status(500)
+        .json({ message: "Failed to fetch updated todo item" });
+    }
+
+    res.json(result.Attributes);
   } catch (err) {
-    console.error("❌ Update error:", err); // ← ログ出力も追加
-    res.status(500).json({ message: "Failed to update todo", error: err });
+    console.error("❌ Update error:", err);
+
+    if (
+      typeof err === "object" &&
+      err !== null &&
+      "name" in err &&
+      err.name === "ConditionalCheckFailedException"
+    ) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    res.status(500).json({ message: "Failed to update todo" });
   }
 };
