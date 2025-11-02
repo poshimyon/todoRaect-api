@@ -14,14 +14,29 @@ curl -X POST http://localhost:3000/todos \
 curl http://localhost:3000/todos -v
 ```
 
+TODO 雛形
+
+```
+{
+  "todoDate": "20251102",
+  "id": "001",
+  "title": "test",
+  "author": "takumi"
+}
 docker 起動
 
 ```
+
 docker-compose up -d
+
 ```
 
 docker 起動
 
 ```
+
 docker-compose down
+
+```
+
 ```
